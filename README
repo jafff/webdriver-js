@@ -1,0 +1,3 @@
+webdriver.js - a selenium server binding for node.js
+
+work in progress. the goal is to fully implement the webdriver protocol as documented here: http://code.google.com/p/selenium/wiki/JsonWireProtocol
