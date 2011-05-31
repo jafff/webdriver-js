@@ -1,0 +1,36 @@
+<!DOCTYPE html>  <html> <head>   <title>main.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="api.html">                 api.coffee               </a>                                           <a class="source" href="lib.html">                 lib.coffee               </a>                                           <a class="source" href="main.html">                 main.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               main.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">api = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./api&#39;</span><span class="p">)</span>
+<span class="nv">fs = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">)</span>
+
+<span class="nv">webdriver = </span><span class="nf">(hostname = &#39;127.0.0.1&#39;, port = 4444, capabilities = undefined) -&gt;</span>
+	<span class="nv">capabilities = </span><span class="p">{}</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">capabilities</span>
+	<span class="k">this</span><span class="p">.</span><span class="nv">debug = </span><span class="kc">false</span>
+
+	<span class="k">this</span><span class="p">.</span><span class="nv">options =</span>
+		<span class="nv">host: </span><span class="nx">hostname</span>
+		<span class="nv">port: </span><span class="nx">port</span>
+		<span class="nv">path: </span><span class="s1">&#39;/wd/hub/session&#39;</span>
+
+	<span class="k">this</span><span class="p">.</span><span class="nv">capabilities =</span>
+		<span class="nv">browserName: </span><span class="nx">capabilities</span><span class="p">[</span><span class="s1">&#39;browserName&#39;</span><span class="p">]</span> <span class="o">or</span> <span class="s1">&#39;chrome&#39;</span>
+		<span class="nv">version: </span><span class="nx">capabilities</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">or</span> <span class="s1">&#39;&#39;</span>
+		<span class="nv">javascriptEnabled: </span><span class="nx">capabilities</span><span class="p">[</span><span class="s1">&#39;javascriptEnabled&#39;</span><span class="p">]</span> <span class="o">or</span> <span class="kc">true</span>
+		<span class="nv">platform: </span><span class="nx">capabilities</span><span class="p">[</span><span class="s1">&#39;platform&#39;</span><span class="p">]</span> <span class="o">or</span> <span class="s1">&#39;ANY&#39;</span>
+
+	<span class="k">this</span><span class="p">.</span><span class="nv">getOptions = </span><span class="nf">(override = {}) -&gt;</span>
+		<span class="nv">opt = </span><span class="p">{}</span>
+		<span class="nx">opt</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">option</span> <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">option</span> <span class="k">of</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span>
+		<span class="nx">opt</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">sessionId</span> <span class="k">if</span> <span class="k">this</span><span class="p">.</span><span class="nx">sessionId</span> <span class="o">!=</span> <span class="kc">null</span>
+		<span class="nx">opt</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">override</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="nx">override</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span>
+		<span class="nx">opt</span>
+	
+	<span class="k">this</span><span class="p">.</span><span class="nv">artifactsPath = </span><span class="s1">&#39;artifacts/&#39;</span>
+	<span class="k">this</span><span class="p">.</span><span class="nv">saveArtifact = </span><span class="nf">(filename, data, callback) -&gt;</span>
+		<span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">artifactsPath</span> <span class="o">+</span> <span class="nx">filename</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="s1">&#39;binary&#39;</span><span class="p">,</span> <span class="nf">(error) -&gt;</span>
+			<span class="k">throw</span> <span class="nx">error</span> <span class="k">if</span> <span class="nx">error</span>
+			<span class="nx">callback</span><span class="p">()</span>
+		<span class="p">)</span>
+
+	<span class="k">this</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">f</span> <span class="k">of</span> <span class="nx">api</span>
+	<span class="k">this</span><span class="p">.</span><span class="nv">sessionId = </span><span class="kc">null</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><strong>webdriver.remote</strong> - returns a new webdriver object</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.remote = </span><span class="nf">(hostname, port, capabilities = undefined) -&gt;</span> <span class="k">new</span> <span class="nx">webdriver</span><span class="p">(</span><span class="nx">hostname</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">capabilities</span><span class="p">)</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
